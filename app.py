@@ -1,8 +1,10 @@
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import ARRAY
 from cryptography.fernet import Fernet
 
-from ENVARS import key #temporary to store keys. later docker instance should store the key
+import os
+key = os.environ["PW_KEY"]
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -14,6 +16,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    sonic_album_id = db.Column(db.String(200), nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -42,7 +45,7 @@ def login():
 
         #If user does not exist...
         if not user:
-            user = User(username=username, password=encoded_password)
+            user = User(username=username, password=encoded_password, sonic_album_id="NONE")
             db.session.add(user)
         else: #Otherwise, update the password hash
             user.password = encoded_password
