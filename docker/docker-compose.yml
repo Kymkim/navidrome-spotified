@@ -1,0 +1,16 @@
+services:
+  navidrome-spotified:
+    image: python:3.14-slim
+    working_dir: /app
+    volumes:
+      - ${SPOTIFIED_VOLUME}:/app
+    command: >
+      sh -c "pip install Flask==3.2.0 Flask-SQLAlchemy==3.0.5 requests==2.32.0 cryptography==41.0.3 python-dotenv==1.0.0 && python weekly.py"
+    environment:
+      - NAVIDROME_URL=${NAVIDROME_URL}
+      - AUDIOMUSE_URL=${AUDIOMUSE_URL}
+      - CIPHER_KEY=${CIPHER_KEY}
+  weekly-cron:
+    image: python:3.14-slim
+    working_dir: /app
+    volumes:
