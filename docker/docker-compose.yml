@@ -1,16 +1,18 @@
 services:
   navidrome-spotified:
-    image: python:3.14-slim
+    image: python:3.11-slim
     working_dir: /app
     volumes:
-      - ${SPOTIFIED_VOLUME}:/app
-    command: >
-      sh -c "pip install Flask==3.2.0 Flask-SQLAlchemy==3.0.5 requests==2.32.0 cryptography==41.0.3 python-dotenv==1.0.0 && python weekly.py"
+      - /mnt/pool1/apps/navidrome-spotified/app:/app
+      - /mnt/pool1/apps/navidrome-spotified/db:/app/db
+    ports:
+      - 55545:5000
     environment:
-      - NAVIDROME_URL=${NAVIDROME_URL}
-      - AUDIOMUSE_URL=${AUDIOMUSE_URL}
-      - CIPHER_KEY=${CIPHER_KEY}
-  weekly-cron:
-    image: python:3.14-slim
-    working_dir: /app
-    volumes:
+      FLASK_SECRET_KEY: "supersecret"
+      CIPHER_KEY: "YOUR_FERNET_KEY_HERE"
+      AUDIOMUSE_URL: "http://your-audiomuse-service"
+      NAVIDROME_URL: "http://your-navidrome-service"
+    command: >
+      sh -c "pip install --no-cache-dir flask flask_sqlalchemy cryptography requests apscheduler && 
+             python app.py"
+    restart: unless-stopped

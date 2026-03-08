@@ -14,7 +14,14 @@ AUDIOMUSE_URL = os.environ["AUDIOMUSE_URL"]
 NAVIDROME_URL = os.environ["NAVIDROME_URL"]
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_folder = os.path.join(basedir, "db")
+os.makedirs(db_folder, exist_ok=True)  # create folder if it doesn't exist
+
+# Database URI
+db_path = os.path.join(db_folder, "users.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersecret")  # for flash messages
 
