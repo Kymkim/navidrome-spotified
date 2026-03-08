@@ -13,7 +13,7 @@ services:
       AUDIOMUSE_URL: "http://your-audiomuse-service"
       NAVIDROME_URL: "http://your-navidrome-service"
     command: >
-      sh -c "git clone https://github.com/Kymkim/navidrome-spotified.git /app && 
+      sh -c "git clone https://github.com/Kymkim/navidrome-spotified /app && 
             pip install --no-cache-dir flask flask_sqlalchemy cryptography requests apscheduler && 
             python /app/app.py"
     restart: unless-stopped
